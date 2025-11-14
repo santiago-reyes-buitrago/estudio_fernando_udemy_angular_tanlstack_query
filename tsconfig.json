@@ -3,6 +3,13 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@env/*": ["src/environments/*"],
+      "@helpers/*": ["src/app/helpers/*"],
+      "@core/*": ["src/app/modules/issues/core/*"],
+      "@actions/*": ["src/app/modules/issues/actions/*"]
+    },
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
