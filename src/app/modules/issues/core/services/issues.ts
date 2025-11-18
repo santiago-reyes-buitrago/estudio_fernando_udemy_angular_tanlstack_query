@@ -3,6 +3,7 @@ import {injectQuery} from '@tanstack/angular-query-experimental';
 import {getLabelsAction} from '@actions/getLabels.action';
 import {getIssuesAction} from '@actions/get-issues.action';
 import {getIssueByIdAction} from '@actions/get-issue.action';
+import {getIssueCommentAction} from '@actions/get-issue-comment.action';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,8 @@ export class Issues {
   private label_tag = 'labels';
   private issues_tag = 'issues';
   private issue_id_tag = 'issue_by_id';
+  private comments = 'comment';
+
 
   private id_issue = signal<string|null>(null)
 
@@ -27,6 +30,12 @@ export class Issues {
   public queryIssueById = injectQuery(() => ({
     queryKey: [this.issue_id_tag,this.id_issue()],
     queryFn: () => getIssueByIdAction(this.id_issue()!),
+    enabled: this.id_issue() !== null
+  }))
+
+  public queryIssueComment = injectQuery(() => ({
+    queryKey: [this.comments,this.id_issue()],
+    queryFn: () => getIssueCommentAction(this.id_issue()!),
     enabled: this.id_issue() !== null
   }))
 
