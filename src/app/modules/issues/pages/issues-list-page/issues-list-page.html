@@ -19,10 +19,17 @@
 <!--  Listado de issues -->
   <div class="mt-4 flex flex-col col-span-2">
     <h3>Issues</h3>
-    <a routerLink="/issues/123" class="btn mt-2">Issue 123</a>
-    <!--    Todo: Listado de issues-->
-
     <!--    Todo: Spinner-->
+    @if (IssuesQuery.isLoading()){
+
+    } @else {
+      @for (issue of IssuesQuery.data(); track issue.id)
+      {
+        <issue-item [issue]="issue!" />
+      } @empty {
+        <p>No hay issues que mostrar</p>
+      }
+    }
 
     <!--    Todo: Si no hay issues por el filtro-->
   </div>
@@ -32,9 +39,7 @@
     @if (LabelQuery.isLoading()) {
       <p>Estamos cargando</p>
     } @else {
-      <pre>
-        {{LabelQuery.data() | json}}
-      </pre>
+      <issues-labels-selector [labels]="LabelQuery.data() ?? []" />
     }
   </div>
 

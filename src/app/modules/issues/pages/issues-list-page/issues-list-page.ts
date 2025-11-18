@@ -1,13 +1,13 @@
 import {Component, inject} from '@angular/core';
-import {RouterLink} from '@angular/router';
 import {Issues} from '@core/services/issues';
-import {JsonPipe} from '@angular/common';
+import {LabelsSelector} from '../../componets/labels-selector/labels-selector';
+import {IssueItem} from '../../componets/issue-item/issue-item';
 
 @Component({
   selector: 'app-issues-list-page',
   imports: [
-    RouterLink,
-    JsonPipe
+    LabelsSelector,
+    IssueItem
   ],
   templateUrl: './issues-list-page.html',
   styleUrl: './issues-list-page.css',
@@ -15,7 +15,11 @@ import {JsonPipe} from '@angular/common';
 export default class IssuesListPage {
   issuesService = inject(Issues)
 
-  get LabelQuery(){
+  get LabelQuery() {
     return this.issuesService.queryLabels
+  }
+
+  get IssuesQuery() {
+    return this.issuesService.queryIssues
   }
 }
