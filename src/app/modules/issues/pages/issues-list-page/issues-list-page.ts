@@ -1,7 +1,8 @@
-import {Component, inject} from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import {Issues} from '@core/services/issues';
 import {LabelsSelector} from '../../componets/labels-selector/labels-selector';
 import {IssueItem} from '../../componets/issue-item/issue-item';
+import {State} from '@core/interfaces';
 
 @Component({
   selector: 'app-issues-list-page',
@@ -13,7 +14,9 @@ import {IssueItem} from '../../componets/issue-item/issue-item';
   styleUrl: './issues-list-page.css',
 })
 export default class IssuesListPage {
-  issuesService = inject(Issues)
+  private issuesService = inject(Issues)
+
+  protected readonly State = State;
 
   get LabelQuery() {
     return this.issuesService.queryLabels
@@ -21,5 +24,13 @@ export default class IssuesListPage {
 
   get IssuesQuery() {
     return this.issuesService.queryIssues
+  }
+
+  get FilterStateActive() {
+    return this.issuesService.selectedState()
+  }
+
+  handleSelectedState(state: State) {
+    this.issuesService.updateSelectedState(state)
   }
 }

@@ -5,13 +5,13 @@
 <!--  Filtros-->
   <div class="col-span-3 flex flex-col">
     <div class="flex gap-2">
-      <button class="btn active">
+      <button [class.active]="FilterStateActive === State.All" class="btn" (click)="handleSelectedState(State.All)">
         All
       </button>
-      <button class="btn">
+      <button [class.active]="FilterStateActive === State.Open" class="btn" (click)="handleSelectedState(State.Open)">
         Open
       </button>
-      <button class="btn">
+      <button [class.active]="FilterStateActive === State.Closed" class="btn" (click)="handleSelectedState(State.Closed)">
         Closed
       </button>
     </div>

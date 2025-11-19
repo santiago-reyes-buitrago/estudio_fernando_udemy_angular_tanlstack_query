@@ -1,9 +1,10 @@
-import {Injectable, signal} from '@angular/core';
-import {injectQuery} from '@tanstack/angular-query-experimental';
+import {inject, Injectable, signal} from '@angular/core';
+import {injectQuery, QueryClient} from '@tanstack/angular-query-experimental';
 import {getLabelsAction} from '@actions/getLabels.action';
 import {getIssuesAction} from '@actions/get-issues.action';
 import {getIssueByIdAction} from '@actions/get-issue.action';
 import {getIssueCommentAction} from '@actions/get-issue-comment.action';
+import {GetIssues, State} from '@core/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -13,9 +14,10 @@ export class Issues {
   private issues_tag = 'issues';
   private issue_id_tag = 'issue_by_id';
   private comments = 'comment';
-
-
   private id_issue = signal<string|null>(null)
+  private queryClient = inject(QueryClient)
+  public selectedState = signal<State>(State.All)
+  public selectedLabels = signal<Set<string>>(new Set<string>())
 
   public queryLabels = injectQuery(() => ({
     queryKey: [this.label_tag],
@@ -23,8 +25,11 @@ export class Issues {
   }))
 
   public queryIssues = injectQuery(() => ({
-    queryKey: [this.issues_tag],
-    queryFn: () => getIssuesAction()
+    queryKey: [this.issues_tag, {
+      state: this.selectedState(),
+      labels: [...this.selectedLabels()]
+    }],
+    queryFn: () => getIssuesAction({state: this.selectedState(),labels: [...this.selectedLabels()]})
   }))
 
   public queryIssueById = injectQuery(() => ({
@@ -42,4 +47,29 @@ export class Issues {
   setIdIssue(id:string) {
     this.id_issue.set(id)
   }
+
+  prefectIssue(id:string){
+    this.queryClient.prefetchQuery({
+      queryKey: [this.issue_id_tag,id],
+      queryFn: () => getIssueByIdAction(id!),
+      staleTime: 1000*60*5
+    })
+  }
+  setIssueData(issue: GetIssues) {
+    this.queryClient.setQueryData([
+      this.issue_id_tag,`${issue.number}`
+    ],issue,{updatedAt: Date.now() + 1000 * 60})
+  }
+
+  updateSelectedState(state:State) {
+    this.selectedState.set(state)
+  }
+
+  updateSelectedLabels(label:string) {
+    const labels = this.selectedLabels();
+    if (labels.has(label)) labels.delete(label);
+    else labels.add(label);
+    this.selectedLabels.set(new Set(labels))
+  }
+
 }

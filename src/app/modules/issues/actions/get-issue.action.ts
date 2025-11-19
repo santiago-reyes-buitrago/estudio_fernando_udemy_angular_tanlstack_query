@@ -3,6 +3,7 @@ import {sleep} from '@helpers/sleep.helper';
 import {environment} from '@env/environment';
 
 export const getIssueByIdAction = async (id:string): Promise<GetIssues> => {
+  console.log('llamar action')
   await sleep(1000);
   try {
     const response = await fetch(`${environment.GITHUB_API_URL}/issues/${id}`,{

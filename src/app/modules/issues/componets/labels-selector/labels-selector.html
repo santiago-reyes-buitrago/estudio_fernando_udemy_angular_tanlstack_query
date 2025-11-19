@@ -2,6 +2,8 @@
   @for (label of labels(); track label.id) {
     <div
       class="border p2 rounded-md hover:bg-slate-950 p-1 cursor-pointer"
+      (click)="handleLabelSelected(label.name)"
+      [class.active]="SelectedLabelsActive.has(label.name)"
       [ngStyle]="{'border-color': '#'+label.color}"
     >
       {{label.name}}
